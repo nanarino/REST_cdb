@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+{#相册发表页内容#}
+
+		{% block page-main %}
+    
+
+
+		<link rel="stylesheet" href="/static/relaxation/css/add-input.css" type="text/css">
+
+        
+		<div class="focusbox">
+			<div class="container">
+				<h1 class="focusbox-title"></h1>
+				<div class="focusbox-text">上传图集(请使用谷歌浏览器,上传时请耐心等待)</div>
+			</div>
+		</div>
+		<section class="container">
+			
+			<form id="albumform" onsubmit="return false">
+				<div class="artc">
+					<div class="artc-box">
+						<textarea placeholder="标题" class="artc-area" name="title" id="album-title" cols="100%" rows="1" tabindex="1" required></textarea>
+					</div>
+                    <div class="artc-box">
+						<textarea placeholder="分类" class="artc-area" name="motif" id="album-motif" cols="100%" rows="1" tabindex="2" required></textarea>
+					</div>
+                    <p style="padding-top:10px">请拖动图片放入方框↓</p>
+					<div class="artc-box" style="height:160px" id="upload">
+
+					</div>
+					<div class="artc-ctrl">
+						<button class="artc-submit" type="button" id="artc-submit" tabindex="3">
+							立即发布
+						</button>
+					</div>
+				</div>
+			</form>
+		</section>
+        <script>
+            $(document).ready(function(){
+
+                let uploadList=[]
+                let canupList=["image/gif","image/jpeg","image/png"]
+                $("#upload")[0].ondragover = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                };
+                $("#upload")[0].ondrop = function (e) {
+                    // 1.file对象
+                    const file = e.dataTransfer.files.item(0);
+                    if(uploadList.length>=9){return false;}
+                    if (canupList.indexOf(file.type)===-1){return false;}
+                    uploadList.push(file)
+                    console.log(uploadList)
+
+                    // 创建文件读取对象
+                    const f = new FileReader();
+                    // 读取图片 格式base64
+                    f.readAsDataURL(file);
+                    f.onload = function(e) {
+                        const img = new Image();
+                        // 格式base64
+                        img.src = this.result;
+                        img.style.width="20%"
+                        upload.appendChild(img);
+                    };
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                function checkaddAlbum(){
+                    if($("#album-title").val().trim()===""){
+                        $(".focusbox-title").html('标题不能为空')
+                        rewardsON()
+                        rewardsLog('发表失败','标题不能为空')
+                        return false;
+                    }
+                    if(uploadList.length<1){
+                        $(".focusbox-title").html('图集不能为空')
+                        rewardsON()
+                        rewardsLog('发表失败','图集不能为空')
+                        return false;
+                    }
+                    var form_data = new FormData();
+                    form_data.append('title', $("#album-title").val().trim());
+                    form_data.append('motif', $("#album-motif").val().trim());
+                    form_data.append('length',uploadList.length);
+                    uploadList.forEach(function(v,i){
+                        form_data.append('file'+i, v);
+                    })
+                    $('#artc-submit').off("click").css('cssText','background-color:#ABABA4;border-color:#ABABA4;');
+                    rewardsON()
+                    rewardsLog("正在上传","请耐心等待")
+                    $.ajax({
+                        type: "POST",  
+                        url:"/addAlbum/?token={{token}}",  
+                        data:form_data,  
+                        async:true,
+                            processData: false,  // tell jquery not to process the data
+                            contentType: false,   // tell jquery not to set contentType         
+                        error: function(request) {  
+                            rewardsON()
+                            rewardsLog("上传失败","可能是您的网络原因")
+                        },  
+                        success: function(data) {  
+                            rewardsON()
+                            if (data.msg==1){
+                                rewardsLog("发表成功","页面即将跳转:<span>3</span>")
+                                countDown(3, "/picture/")
+                            }else if(data.msg==0){
+                                rewardsLog("发表失败",data.detail)
+                            }
+                        }  
+                    });
+                }
+                $('#artc-submit').on('click', function(){
+                    checkaddAlbum()
+                })
+            })
+        </script>
+        {% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{#首页内容#}
+        {% block page-main %}
+        
+        
+        <div class="focusbox">
+			<div class="container">
+				<h1 class="focusbox-title">cdb-相册接口</h1>
+				<div class="focusbox-text">返回0表示未登录/不合法/错误&nbsp;&nbsp;&nbsp;&nbsp;返回1和或以上表示成功或者Uid&nbsp;&nbsp;&nbsp;&nbsp;硬核接口要加?format=json</div>
+			</div>
+		</div>
+        
+        
+		<section class="container">
+            <div class="tagslist">
+                <ul>
+                    <li>
+                        <a class="name" href="/user/login/">硬核接口</a><small>登录</small>
+                        <p><a class="tit" href="">r'^user/login/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/user/register/">硬核接口</a><small>注册</small>
+                        <p><a class="tit" href="">r'^user/register/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/user/isLogin/">硬核接口</a><small>请求登录状态</small>
+                        <p><a class="tit" href="">r'^user/isLogin/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/addAlbum/">硬核接口</a><small>相册上传</small>
+                        <p><a class="tit" href="">r'^addAlbum/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/addAlbumForm/">表单示例</a><small>相册上传</small>
+                        <p><a class="tit" href="">r'^addAlbumForm/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/picture/">后端渲染</a><small>相册预览</small>
+                        <p><a class="tit" href="">静态资源演示</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/api/albums/?page=1">硬核接口</a><small>相册列表</small>
+                        <p><a class="tit" href="">r'^api/albums/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/api/album/1">硬核接口</a><small>相册明细</small>
+                        <p><a class="tit" href="">r'^api/album/(?P<pk>\d+)/$'</a></p>
+                    </li>
+                    <li>
+                        <a class="name" href="/user/logout/">接口</a><small>注销登录</small>
+                        <p><a class="tit" href="">r'^user/logout/$'</a></p>
+                    </li>
+                </ul>
+            </div>
+		</section>
+
+        {% endblock %}

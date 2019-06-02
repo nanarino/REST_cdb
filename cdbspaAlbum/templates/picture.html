@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{#美图区页内容#}
+		{% block page-main %}
+    
+		<section class="container">
+			<div class="tagslist">
+                <ul>
+                {% for i in album_list %}
+                    <li>
+                        <a class="name" href="/picture/watch/?albumId={{i.id}}">
+                            {{i.motif|default:"未分类"|truncatechars:6|lower}}
+                        </a><small>{{i.imglen}}张</small>
+                        <p>
+                            <a class="tit" href="/picture/watch/?albumId={{i.id}}">
+                                {{i.title|truncatechars:18}}
+                            </a>
+                        </p>
+                    </li>
+                {% endfor %}
+                </ul>
+			</div>
+		</section>
+    
+        {% endblock %}

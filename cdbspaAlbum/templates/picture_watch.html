@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{#图册阅览页内容#}
+
+		{% block page-main %}
+    
+		<section class="container">
+            <div class="content-wrap">
+                <div class="content">
+                    <header class="article-header">
+                        <h1 class="article-title">{{album.title}}</h1>
+                        <div class="article-meta">
+                            <span class="item item-1">{{album.time|date:"Y-m-d H:i:s"}}</span>
+                            <span class="item item-2">作者：<a href="/relaxation/ownSpace/?userId={{album.publisher.id}}">{{album.publisher.username}}</a></span>
+                            <span class="item item-3">分类：{{album.motif|default:"无"}}</span>
+                        </div>
+                    </header>
+                    <article class="article-content">
+                    
+                    </article>
+                </div>
+            </div>
+
+            <script>
+                madata='{{album.imgurl | safe}}'.replace(/\\/g,"\/")
+                data=JSON.parse(madata)
+                var ecpTag=''
+                for(i in data){
+                    ecpTag=ecpTag+'<p><img class="aligncenter size-full" src="'+location.origin+'\/'+data[i]+'"/></p>'
+                }
+                $(".article-content").append(ecpTag)
+            </script>
+		</section>
+
+    
+        {% endblock %}
