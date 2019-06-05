@@ -55,6 +55,8 @@ cd cdbspaAlbum
 pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
+​    django版本： 1.11.20
+
 
 
 ### 修改配置
@@ -114,7 +116,9 @@ python3 manage.py runserver 0.0.0.0:80
 
 
 
-##### 联系方式
+##### 推荐联系方式
 
- 最近一直被恶意举报加不了qq可以b站私信我，
+ 私信b站账号
+
+
 
