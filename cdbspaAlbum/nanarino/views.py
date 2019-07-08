@@ -2,10 +2,8 @@ from django.shortcuts import render#,redirect,HttpResponse
 from django.contrib import auth
 #from django.contrib.auth.models import AbstractUser
 #from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-# Create your views here.
-from . import models
-from django.views.decorators.csrf import ensure_csrf_cookie
+#from django.http import JsonResponse
+#from django.views.decorators.csrf import ensure_csrf_cookie
 #from django.views.decorators.csrf import csrf_exempt
 import os
 import json
@@ -15,8 +13,7 @@ from cdb.settings import BASE_DIR
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import viewsets
-from . import  serializers
-from rest_framework import pagination
+from . import  models,serializers,pagination
 
 #自定义认证类
 from rest_framework.authentication import BaseAuthentication
@@ -133,25 +130,16 @@ class Add_album(APIView):
                     f.write(chunk)
                 f.close()
         except:
-            return Response({"msg": 0,"detail": '储存过程失败 可以反馈给程序猿'})#(一个chunk：2.5M)
+            return Response({"msg": 0,"detail": '储存过程失败 可以反馈给程序猿'})#一个chunk：2.5M
         else:
             imgurl_list_json = json.dumps(imgurl_list)
             models.Album.objects.create(title=title, imgurl=imgurl_list_json,imglen=length, motif=motif, publisher_id=user_id)
             return Response({"msg": 1})#发表成功
-
-#自定义分页类
-class MyPageNumberPagination(pagination.PageNumberPagination):
-    page_size = 2
-    page_size_query_param = "size"
-    max_page_size = 10
-    page_query_param = "page"
-
 
 
 
 class AlbumView(viewsets.ModelViewSet):
     queryset = models.Album.objects.all()
     serializer_class = serializers.AlbumSerializers
-
-    pagination_class = MyPageNumberPagination
+    pagination_class = pagination.MyPageNumberPagination
 

@@ -18,3 +18,6 @@ class Album(models.Model):
     publisher = models.ForeignKey(to="UserInfo")
     def __repr__(self):
         return "<{}-{}>".format(self.title,self.motif)
+    #drf排序依据
+    class Meta:
+        ordering = ('id',)

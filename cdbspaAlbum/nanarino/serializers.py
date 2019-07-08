@@ -1,10 +1,11 @@
 from rest_framework import serializers
+from nanarino.models import UserInfo,Album
 
 
-class UserSerializers(serializers.Serializer):
-    id = serializers.IntegerField(required=False)
-    username = serializers.CharField()
-
+class UserSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = UserInfo
+        fields = ('id', 'username')
 
 class AlbumSerializers(serializers.Serializer):
     id = serializers.IntegerField(required=False)
