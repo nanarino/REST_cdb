@@ -15,4 +15,3 @@ class AlbumSerializers(serializers.Serializer):
     motif = serializers.CharField()
     time = serializers.DateTimeField(required=False)
     publisher = UserSerializers(read_only=True)
-    publisher_id = UserSerializers(write_only=True)
