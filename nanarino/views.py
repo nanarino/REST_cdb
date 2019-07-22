@@ -1,41 +1,24 @@
-from django.shortcuts import render#,redirect,HttpResponse
-from django.contrib import auth
-#from django.contrib.auth.models import AbstractUser
-#from django.contrib.auth.decorators import login_required
-#from django.http import JsonResponse
-#from django.views.decorators.csrf import ensure_csrf_cookie
-#from django.views.decorators.csrf import csrf_exempt
-import os
-import json
-import time
-import uuid
-from cdb.settings import BASE_DIR
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import viewsets
-from . import  models,serializers,pagination
-
-#自定义认证类
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-class MyAuth(BaseAuthentication):
-    def authenticate(self,request):
-        token = request.query_params.get('token','')
-        if not token:
-            raise AuthenticationFailed('缺少token 格式：pathname/?token=uuid')
-        user = models.UserInfo.objects.filter(token=token).first()
-        if not user:
-            raise AuthenticationFailed('token不合法')
-        return (user,token) #request.user & request.auth
+# Create your views here.
+from . import  models,serializers,pagination,auth
+from django.contrib.auth import authenticate,login,logout
+#from rest_framework import viewsets
+import os,json,time,uuid
+from REST_cdb.settings import BASE_DIR
 
 def index(request):
     return render(request, "index.html")
 
+
 #注册
-class User_register(APIView):
+class RegisterView(APIView):
+
     def get(self, request):
-        return Response({"detail": '登录接口只开放POST请求,格式（英文标点）：{“username”:“古川”,“password”:“123456”}'})
-    def post(self, request):  # {"username":"古川","password":"123456"}
+        return Response({"detail": "注册接口只开放POST请求,格式（英文标点）","例如":{"username":"古川","password":"123456"}})
+
+    def post(self, request):
         username=request.data.get("username",'').strip()
         if not models.UserInfo.objects.filter(username=username):
             password=request.data.get("password",'').strip()
@@ -43,7 +26,7 @@ class User_register(APIView):
                 user = models.UserInfo.objects.create_user(username=username,password=password)
                 user_obj = dict()
                 user_obj['msg'] = user.id
-                user_obj['token'] = user.token
+                user_obj['token'] = "请再次登录获取"
             except:
                 return Response({"msg": 0, "detail": '密码不合要求'})  # 密码不合要求
             else:
@@ -52,41 +35,38 @@ class User_register(APIView):
 
 #登录
 class LoginView(APIView):
+
     def get(self,request):
-        return Response({"detail":'登录接口只开放POST请求,格式（英文标点）：{“username”:“古川”,“password”:“123456”}'})
-    def post(self,request):#{"username":"古川","password":"123456"}
+        return Response({"detail": "登录接口只开放POST请求,格式（英文标点）","例如":{"username":"古川","password":"123456"}})
+
+    def post(self,request):
         username = request.data.get("username",'')
         password = request.data.get("password", '')
-        user = auth.authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
         user_obj = dict()
         if user:
-            auth.login(request,user)
+            login(request,user)
             user.token = uuid.uuid4()
             user.save()
             user_obj['msg'] = user.id
             user_obj['token'] = user.token
             return Response(user_obj)
         user_obj['msg'] = 0
+        user_obj["detail"] = "用户名或密码错误"
         return Response(user_obj)
-
-#验证登录状态
-class User_is_login(APIView):
-    authentication_classes = [MyAuth,]
-    def get(self,request):
-        user_obj = dict()
-        user_obj['msg'] = request.user.id
-        user_obj['token'] = request.auth
-        return Response(user_obj)
-
 
 #注销登录
-class User_logout(APIView):
-    authentication_classes = [MyAuth, ]
+class LogoutView(APIView):
+    authentication_classes = [auth.MyAuth, ]
     def get(self,request):
-        request.user.token=''
+        request.user.token=None
         request.user.save()
+        try:
+            if request.user.is_authenticated():
+                logout(request)
+        except Exception:
+            pass
         return Response({"msg":1})  #注销成功
-
 
 #相册列表页
 def picture(request):
@@ -104,11 +84,16 @@ def add_album_form(request):
     token=request.user.token
     return render(request, "relaxation_addAlbum.html",{'token':token})
 
-#上传相册接口
-class Add_album(APIView):
-    authentication_classes = [MyAuth,]
+
+class AlbumListView(APIView):
+    authentication_classes = [auth.MyAuth, ]
     def get(self,request):
-        return Response({"detail":'上传接口只开放POST请求,推荐使用表单对象上传,file类型的键名请用file0 - file8'})
+        qs = models.Album.objects.all()
+        pg = pagination.MyPageNumberPagination()
+        pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
+        sl = serializers.AlbumListSerializers(instance=pg_qs,many=True)
+        return pg.get_paginated_response(sl.data)
+
     def post(self,request):
         title=request.data.get("title",'')
         user_id = request.user.id
@@ -136,10 +121,12 @@ class Add_album(APIView):
             models.Album.objects.create(title=title, imgurl=imgurl_list_json,imglen=length, motif=motif, publisher_id=user_id)
             return Response({"msg": 1})#发表成功
 
+class AlbumView(APIView):
+    authentication_classes = [auth.MyAuth, ]
 
-
-class AlbumView(viewsets.ModelViewSet):
-    queryset = models.Album.objects.all()
-    serializer_class = serializers.AlbumSerializers
-    pagination_class = pagination.MyPageNumberPagination
-
+    def get(self,request):
+        qs = models.Album.objects.all()
+        pg = pagination.MyPageNumberPagination()
+        pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
+        sl = serializers.AlbumSerializers(instance=pg_qs,many=True)
+        return pg.get_paginated_response(sl.data)

@@ -95,7 +95,7 @@
                     rewardsLog("正在上传","请耐心等待")
                     $.ajax({
                         type: "POST",  
-                        url:"/addAlbum/?token={{token}}",  
+                        url:"/api/albums/?token={{token}}",  
                         data:form_data,  
                         async:true,
                             processData: false,  // tell jquery not to process the data
