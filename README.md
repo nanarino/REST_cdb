@@ -1,8 +1,8 @@
-# cdbSPAAlbum
+# REST_cdb
 
 采用django rest framework
 
-为cdb-spa项目提供api接口
+为前端项目：SPA_cdb,提供api接口
 
 未完成 目前只完成了认证和图片的接口
 
