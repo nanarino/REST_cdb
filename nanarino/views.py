@@ -86,7 +86,6 @@ def add_album_form(request):
 
 
 class AlbumListView(APIView):
-    authentication_classes = [auth.MyAuth, ]
     def get(self,request):
         qs = models.Album.objects.all()
         pg = pagination.MyPageNumberPagination()
@@ -95,6 +94,7 @@ class AlbumListView(APIView):
         return pg.get_paginated_response(sl.data)
 
     def post(self,request):
+        auth.MyAuth().authenticate(request=request)
         title=request.data.get("title",'')
         user_id = request.user.id
         motif = request.data.get("motif",'').strip()
@@ -122,11 +122,7 @@ class AlbumListView(APIView):
             return Response({"msg": 1})#发表成功
 
 class AlbumView(APIView):
-    authentication_classes = [auth.MyAuth, ]
-
-    def get(self,request):
+    def get(self,request, *args, **kwargs):
         qs = models.Album.objects.all()
-        pg = pagination.MyPageNumberPagination()
-        pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
-        sl = serializers.AlbumSerializers(instance=pg_qs,many=True)
-        return pg.get_paginated_response(sl.data)
+        sl = serializers.AlbumSerializers(instance=qs,many=True)
+        return Response(sl.data)

@@ -25,7 +25,7 @@ SECRET_KEY = '+#a-l8)el$3g-+v-91zs#)^c4k)nmnbgj_u)$yv6e#pc2^$-*1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1","www.akokono.com",]
+ALLOWED_HOSTS = ["127.0.0.1","www.******.com",]
 
 
 # Application definition
@@ -85,7 +85,7 @@ DATABASES = {
         "PORT":3306,
         'NAME':"REST_cdb",
         "USER":"root",
-        "PASSWORD":"383584409yxhyj"
+        "PASSWORD":"*********"
     }
 }
 
