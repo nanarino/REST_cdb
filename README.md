@@ -51,8 +51,6 @@ MySQL5.7
 ### 安装依赖
 
 ```cmd
-cd cdbspaAlbum
-
 pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
