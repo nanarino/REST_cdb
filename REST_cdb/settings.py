@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # drf cors
     'django.middleware.security.SecurityMiddleware',
+    "nanarino.csrf_exempt.DisableCSRFCheck",#自定义中间件绕过csrf
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,7 +86,7 @@ DATABASES = {
         "PORT":3306,
         'NAME':"REST_cdb",
         "USER":"root",
-        "PASSWORD":"*********"
+        "PASSWORD":"********"
     }
 }
 
