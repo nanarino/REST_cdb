@@ -1,4 +1,4 @@
-"""REST_cdb URL Configuration
+"""cdb URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -15,17 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+
 from nanarino import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/albums/$', views.AlbumListView.as_view()),
-    url(r'^api/album/(?P<pk>\d+)/$', views.AlbumView.as_view()),
+    url(r'^api/albums/$', views.AlbumView.as_view({"get":"list"})),
+    url(r'^api/album/(?P<pk>\d+)/$', views.AlbumView.as_view({"get":"retrieve"})),
     url(r'^picture/$', views.picture),
     url(r'^picture/watch/$', views.picture_watch),
+    url(r'^addAlbum/$', views.Add_album.as_view()),
     url(r'^addAlbumForm/$', views.add_album_form),
     url(r'^user/login/$', views.LoginView.as_view()),
-    url(r'^user/logout/$', views.LogoutView.as_view()),
-    url(r'^user/register/$', views.RegisterView.as_view()),
+    url(r'^user/logout/$', views.User_logout.as_view()),
+    url(r'^user/register/$', views.User_register.as_view()),
+    url(r'^user/isLogin/$', views.User_is_login.as_view()),
     url(r'^$', views.index),
 ]

@@ -84,7 +84,6 @@
                         return false;
                     }
                     var form_data = new FormData();
-                    //form_data.append('csrfmiddlewaretoken','{{ csrf_token }}');
                     form_data.append('title', $("#album-title").val().trim());
                     form_data.append('motif', $("#album-motif").val().trim());
                     form_data.append('length',uploadList.length);
@@ -96,7 +95,7 @@
                     rewardsLog("正在上传","请耐心等待")
                     $.ajax({
                         type: "POST",  
-                        url:"/api/albums/?token={{token}}",
+                        url:"/addAlbum/?token={{token}}",  
                         data:form_data,  
                         async:true,
                             processData: false,  // tell jquery not to process the data

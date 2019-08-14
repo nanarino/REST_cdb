@@ -1,10 +1,8 @@
-# REST_cdb
+# cdbSPAAlbum
 
 采用django rest framework
 
-为前端项目：SPA_cdb,提供api接口
-
-未完成 目前只完成了认证和图片的接口
+未完成 目前只完成了上传图片的接口
 
 项目和人 都有待改进
 
@@ -25,6 +23,7 @@ Vary: Accept
         {
             "id": 1,
             "title": "时雨最可爱",
+            "imgurl": "[\"static/picture/img/1559436704395AC48A7A58AAA9FBA9DEA54CAF0EDE.jpg\", \"static/picture/img/1559436705593813C809182DCFAEC29F6B6CE93F17.jpg\", \"static/picture/img/15594367063106223BD87DD6781D4169591AEA9DEE.jpg\", \"static/picture/img/1559436707A53CFCE1BB7CC9865EEFAAE8C0D79827.jpg\", \"static/picture/img/1559436708B4F43F1028DE8102E0B870DB07F458B6.jpg\", \"static/picture/img/1559436709D52310CAA1924FD44D98894A150F0B22.jpg\", \"static/picture/img/1559436710D453DB5E044EF8CB712DD6824A21EC85.jpg\", \"static/picture/img/1559436711BAE822B605D096723D01BB260F451400.jpg\", \"static/picture/img/1559436712DAAC1C419B4046EF0FBB9EE806909020.jpg\"]",
             "imglen": "9",
             "motif": "舰C",
             "time": "2019-06-02T08:51:44.769952+08:00",
@@ -51,6 +50,8 @@ MySQL5.7
 ### 安装依赖
 
 ```cmd
+cd cdbspaAlbum
+
 pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
@@ -66,13 +67,13 @@ pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 #第28行 改成你的域名
 ALLOWED_HOSTS = ["127.0.0.1","www.******.com",]
 
-#第88行 改成你的mysql密码
+#第96行 改成你的mysql密码
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         "HOST":"127.0.0.1",
         "PORT":3306,
-        'NAME':"REST_cdb",
+        'NAME':"cdbSPAAlbumProject",
         "USER":"root",
         "PASSWORD":"********"
     }
@@ -84,7 +85,7 @@ DATABASES = {
 ### 创建数据库
 
 ```sql
-CREATE DATABASE REST_cdb DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE cdbSPAAlbumProject DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 ```
 
 
