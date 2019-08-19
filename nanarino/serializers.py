@@ -7,6 +7,19 @@ class UserSerializers(serializers.ModelSerializer):
         model = UserInfo
         fields = ('id', 'username')
 
+class ArticleListSerializers(serializers.ModelSerializer):
+    writer = UserSerializers(read_only=True)
+    class Meta:
+        model = Article
+        fields = ('id', 'title', 'motif', 'time', 'writer')
+
+class ArticleSerializers(serializers.ModelSerializer):
+    writer = UserSerializers(read_only=True)
+    class Meta:
+        model = Article
+        fields = ('id', 'title', 'motif', 'content', 'time', 'writer')
+
+
 class AlbumListSerializers(serializers.ModelSerializer):
     publisher = UserSerializers(read_only=True)
     class Meta:
@@ -22,3 +35,10 @@ class AlbumSerializers(serializers.ModelSerializer):
     class Meta:
         model = Album
         fields = ('id', 'title', 'motif', 'imglen', 'time', 'publisher','imglist')
+
+
+class CommentListSerializers(serializers.ModelSerializer):
+    writer = UserSerializers(read_only=True)
+    class Meta:
+        model = Comment
+        fields = ('id', 'content', 'time', 'writer')

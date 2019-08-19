@@ -85,10 +85,36 @@ def add_album_form(request):
     return render(request, "relaxation_addAlbum.html",{'token':token})
 
 
-class AlbumListView(APIView):
-    #authentication_classes = [auth.MyAuth, ]
+
+class ArticleListView(APIView):
     def get(self,request):
-        # auth.MyAuth().authenticate(request=request)
+        qs = models.Article.objects.all()
+        pg = pagination.MyPageNumberPagination()
+        pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
+        sl = serializers.ArticleListSerializers(instance=pg_qs,many=True)
+        return pg.get_paginated_response(sl.data)
+    def post(self,request):
+        auth.MyAuth().authenticate(request=request)
+        title = request.data.get("title",'')
+        content = request.data.get("content",'')
+        motif = request.data.get("motif").strip()
+        user_id = request.user.id
+        try:
+            models.Article.objects.create(title=title, content=content, motif=motif, writer_id=user_id)
+        except:
+            return Response({"msg": 0,"detail": '储存过程失败 可以反馈给程序猿'})
+        else:
+            return Response({"msg": 1})
+
+class ArticleView(APIView):
+    def get(self,request,pk):
+        qs = models.Article.objects.filter(id=pk)
+        sl = serializers.ArticleSerializers(instance=qs,many=True)
+        return Response(sl.data)
+
+
+class AlbumListView(APIView):
+    def get(self,request):
         qs = models.Album.objects.all()
         pg = pagination.MyPageNumberPagination()
         pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
@@ -128,3 +154,30 @@ class AlbumView(APIView):
         qs = models.Album.objects.filter(id=pk)
         sl = serializers.AlbumSerializers(instance=qs,many=True)
         return Response(sl.data)
+
+class CommentListView(APIView):
+    def get(self,request):
+        article_id = request.query_params.get('articleId', '')
+        album_id = request.query_params.get('albumId', '')
+        if not article_id == '':
+            qs = models.Comment.objects.filter(article_id = article_id)
+        elif not album_id == '':
+            qs = models.Comment.objects.filter(album_id = album_id)
+        else:
+            return Response({"msg": 0,"detail": '查询不到结果'})
+        pg = pagination.MyPageNumberPagination()
+        pg_qs = pg.paginate_queryset(queryset=qs,request=request,view=self)
+        sl = serializers.CommentListSerializers(instance=pg_qs,many=True)
+        return pg.get_paginated_response(sl.data)
+    def post(self,request):
+        auth.MyAuth().authenticate(request=request)
+        article_id = request.data.get("articleId",'')
+        album_id = request.data.get("albumId",'')
+        content = request.data.get("comment")
+        user_id = request.user.id
+        try:
+            models.Comment.objects.create(article_id=article_id, album_id=album_id, content=content, writer_id=user_id)
+        except:
+            return Response({"msg": 0,"detail": '储存过程失败 可以反馈给程序猿'})  # 迫害失败
+        else:
+            return Response({"msg": 1})  # 评论成功
